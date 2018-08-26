@@ -1,0 +1,15 @@
+[package]
+name = "graphql-select"
+version = "0.1.0"
+authors = ["Boopathi Rajaa <me@boopathi.in>"]
+
+[dependencies]
+graphql-parser = "0.2.2"
+
+[lib]
+name = "graphql_select"
+path = "src/lib.rs"
+
+[[bin]]
+name = "graphql_select"
+path = "src/bin.rs"
