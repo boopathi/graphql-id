@@ -3,7 +3,7 @@ use visitor::*;
 
 pub fn traverse(document: &Document, visitor: Box<Visitor>) {
   let mut traversal = Traversal { visitor };
-  traversal.handle_document(document);
+  traversal.handle_document(&document);
 }
 
 struct Traversal {
