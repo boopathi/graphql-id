@@ -9,13 +9,17 @@ use graphql_select::visitor::*;
 fn name_visitor() {
   struct NameVisitor;
   impl Visitor for NameVisitor {
-    fn visit_query<'a>(&mut self, query: &'a Query) {
+    fn visit_query_enter<'a>(&mut self, query: &'a Query) {
       assert_eq!(query.name.as_ref().unwrap(), "Foo");
     }
   }
 
   let document = parse_query("query Foo { foo }").unwrap();
-  let visitor = Box::new(NameVisitor {});
+  let mut visitor = NameVisitor {};
 
-  traverse(&document, visitor);
+  let mut traversal = Traversal {
+    visitor: &mut visitor,
+  };
+
+  traversal.handle_document(&document);
 }
