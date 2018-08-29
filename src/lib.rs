@@ -12,7 +12,14 @@ use traverse::*;
 use visitor::Visitor;
 
 struct FragmentSpreadVisitor<'a> {
+    /// the document reference to get to fragment node from fragment spread
     document: &'a Document,
+
+    /// used fragments - our result that we will use to select the fragments
+    used_fragments: Vec<&'a FragmentDefinition>,
+
+    /// the visited fragments during traversal - so as to avoid infinite
+    /// recursion of fragments
     visited_fragments: Vec<&'a FragmentDefinition>,
 }
 
@@ -43,7 +50,11 @@ impl<'a> Visitor for FragmentSpreadVisitor<'a> {
         let mut sub_visitor = FragmentSpreadVisitor {
             document: &self.document,
             visited_fragments: [&self.visited_fragments[..], &[fragment]].concat(),
+            used_fragments: [&self.used_fragments[..], &[fragment]].concat(),
         };
+
+        self.used_fragments
+            .extend_from_slice(&sub_visitor.used_fragments[..]);
 
         let mut traversal = Traversal {
             visitor: &mut sub_visitor,
@@ -62,15 +73,26 @@ pub fn select_operation(query: &str, operation_name: &str) -> Result<String, Gra
 
     let mut visitor = FragmentSpreadVisitor {
         document: &document,
+        used_fragments: vec![],
         visited_fragments: vec![],
     };
 
-    let mut traversal = Traversal {
-        visitor: &mut visitor,
-    };
-    traversal.handle_operation_definition(&operation)?;
+    // this block is required so the mutable borrow of visitor ends here
+    {
+        let mut traversal = Traversal {
+            visitor: &mut visitor,
+        };
+        traversal.handle_operation_definition(&operation)?;
+    }
 
-    Ok(format!("{}", operation))
+    let fragments = visitor
+        .used_fragments
+        .iter()
+        .map(|fragment| format!("{}", fragment))
+        .collect::<Vec<String>>()
+        .join("\n");
+
+    Ok(format!("{} {}", operation, fragments))
 }
 
 fn select_operation_definition<'a>(
