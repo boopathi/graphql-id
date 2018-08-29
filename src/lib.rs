@@ -92,7 +92,7 @@ pub fn select_operation(query: &str, operation_name: &str) -> Result<String, Gra
         .collect::<Vec<String>>()
         .join("\n");
 
-    Ok(format!("{} {}", operation, fragments))
+    Ok(format!("{}{}", operation, fragments))
 }
 
 fn select_operation_definition<'a>(
@@ -129,10 +129,3 @@ fn select_fragment_defintion(definition: &Definition) -> Option<&FragmentDefinit
 fn is_operation_name(name: &Option<String>, operation_name: &str) -> bool {
     name.as_ref().map_or(false, |name| name == operation_name)
 }
-
-// pub fn callme() {
-//     let document = parse_query("query Foo{foo}").unwrap();
-//     let visitor = Box::new(PrintVisitor {});
-
-//     traverse_document(&document, visitor);
-// }

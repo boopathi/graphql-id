@@ -2,6 +2,7 @@ extern crate graphql_parser;
 extern crate graphql_select;
 
 use graphql_parser::query::*;
+use graphql_select::error::*;
 use graphql_select::traverse::*;
 use graphql_select::visitor::*;
 
@@ -9,8 +10,9 @@ use graphql_select::visitor::*;
 fn name_visitor() {
   struct NameVisitor;
   impl Visitor for NameVisitor {
-    fn visit_query_enter<'a>(&mut self, query: &'a Query) {
+    fn visit_query_enter(&mut self, query: &Query) -> Result<(), GraphQLError> {
       assert_eq!(query.name.as_ref().unwrap(), "Foo");
+      Ok(())
     }
   }
 
@@ -21,5 +23,5 @@ fn name_visitor() {
     visitor: &mut visitor,
   };
 
-  traversal.handle_document(&document);
+  assert_eq!(traversal.handle_document(&document).is_ok(), true);
 }

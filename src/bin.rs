@@ -8,5 +8,5 @@ fn main() {
     &"B",
   );
 
-  println!("{:?}", operation);
+  println!("{}", operation.unwrap());
 }
