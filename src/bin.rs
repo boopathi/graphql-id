@@ -4,9 +4,9 @@ use graphql_select::*;
 
 fn main() {
   let operation = select_operation(
-    &"query A { foo } query B { ...foo } fragment foo on B { bar }",
-    &"B",
+    &"query A { foo { ...bar } ...bar } query B { ...foo } fragment foo on B { bar } fragment bar on A { foo }",
+    &"A",
   );
 
-  println!("{}", operation.unwrap());
+  print!("{}", operation.unwrap());
 }

@@ -5,11 +5,15 @@ pub mod error;
 pub mod traverse;
 pub mod visitor;
 
+mod wrappers;
+
 use error::*;
 use graphql_parser::query::*;
+use std::collections::BTreeSet;
 use std::result::Result::*;
 use traverse::*;
 use visitor::Visitor;
+use wrappers::FragmentDefinitionContainer;
 
 struct FragmentSpreadVisitor<'a> {
     /// the document reference to get to fragment node from fragment spread
@@ -47,14 +51,25 @@ impl<'a> Visitor for FragmentSpreadVisitor<'a> {
             ));
         }
 
+        let mut used_fragments: BTreeSet<_> = self
+            .used_fragments
+            .iter()
+            .map(|fragment| FragmentDefinitionContainer(fragment))
+            .collect();
+        used_fragments.insert(FragmentDefinitionContainer(fragment));
+
+        let used_fragments = used_fragments
+            .iter()
+            .map(|container| container.0)
+            .collect::<Vec<_>>();
+
         let mut sub_visitor = FragmentSpreadVisitor {
             document: &self.document,
             visited_fragments: [&self.visited_fragments[..], &[fragment]].concat(),
-            used_fragments: [&self.used_fragments[..], &[fragment]].concat(),
+            used_fragments: used_fragments.clone(),
         };
 
-        self.used_fragments
-            .extend_from_slice(&sub_visitor.used_fragments[..]);
+        self.used_fragments = used_fragments;
 
         let mut traversal = Traversal {
             visitor: &mut sub_visitor,
