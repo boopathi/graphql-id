@@ -1,6 +1,5 @@
 extern crate graphql_parser;
 
-pub mod ast;
 pub mod error;
 pub mod traverse;
 pub mod visitor;
@@ -36,7 +35,7 @@ impl<'a> Visitor for FragmentSpreadVisitor<'a> {
             .document
             .definitions
             .iter()
-            .filter_map(|definition| select_fragment_defintion(definition))
+            .filter_map(|definition| filter_fragment_defintion(definition))
             .find(|fragment_definition| fragment_definition.name == fragment_spread.fragment_name)
             .ok_or(GraphQLError::FragmentNotFound)?;
 
@@ -117,7 +116,7 @@ fn select_operation_definition<'a>(
     document
         .definitions
         .iter()
-        .filter_map(|definition| choose_operation_definition(definition))
+        .filter_map(|definition| filter_operation_definition(definition))
         .find(|operation_definition| match operation_definition {
             OperationDefinition::Query(query) => is_operation_name(&query.name, &operation_name),
             OperationDefinition::Mutation(mutation) => {
@@ -127,14 +126,14 @@ fn select_operation_definition<'a>(
         })
 }
 
-fn choose_operation_definition(definition: &Definition) -> Option<&OperationDefinition> {
+fn filter_operation_definition(definition: &Definition) -> Option<&OperationDefinition> {
     match definition {
         Definition::Operation(operation_definition) => Some(&operation_definition),
         _ => None,
     }
 }
 
-fn select_fragment_defintion(definition: &Definition) -> Option<&FragmentDefinition> {
+fn filter_fragment_defintion(definition: &Definition) -> Option<&FragmentDefinition> {
     match definition {
         Definition::Fragment(fragment_definition) => Some(&fragment_definition),
         _ => None,

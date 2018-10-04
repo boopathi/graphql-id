@@ -44,14 +44,12 @@ fn select_from_multiple_queries() {
 
     assert_eq!(
         normalize(QueryStr::Actual(select_operation(&query, &"A").unwrap())),
-        normalize(
-            QueryStr::Expected(
-                "
-                    query A {
-                      foo
-                    }
-                "
-            )
-        )
+        normalize(QueryStr::Expected(
+            "
+                query A {
+                    foo
+                }
+            "
+        ))
     );
 }
