@@ -1,10 +1,10 @@
+extern crate graphql_id;
 extern crate graphql_parser;
-extern crate graphql_select;
 
+use graphql_id::error::*;
+use graphql_id::traverse::*;
+use graphql_id::visitor::*;
 use graphql_parser::query::*;
-use graphql_select::error::*;
-use graphql_select::traverse::*;
-use graphql_select::visitor::*;
 
 #[test]
 fn name_visitor() {

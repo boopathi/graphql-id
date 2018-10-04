@@ -1,5 +1,5 @@
 [package]
-name = "graphql-select"
+name = "graphql-id"
 version = "0.1.0"
 authors = ["Boopathi Rajaa <me@boopathi.in>"]
 
@@ -7,9 +7,9 @@ authors = ["Boopathi Rajaa <me@boopathi.in>"]
 graphql-parser = "0.2.2"
 
 [lib]
-name = "graphql_select"
+name = "graphql_id"
 path = "src/lib.rs"
 
 [[bin]]
-name = "graphql_select"
+name = "graphql-id"
 path = "src/bin.rs"

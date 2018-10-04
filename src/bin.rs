@@ -1,6 +1,6 @@
-extern crate graphql_select;
+extern crate graphql_id;
 
-use graphql_select::*;
+use graphql_id::*;
 
 fn main() {
   let operation = select_operation(

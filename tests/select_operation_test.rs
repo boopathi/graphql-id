@@ -1,8 +1,8 @@
+extern crate graphql_id;
 extern crate graphql_parser;
-extern crate graphql_select;
 
+use graphql_id::select_operation;
 use graphql_parser::parse_query;
-use graphql_select::select_operation;
 
 enum QueryStr {
     Actual(String),
