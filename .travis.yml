@@ -19,7 +19,7 @@ jobs:
       rust: nightly
       script:
         - export PATH="$PATH:~/.cargo/bin"
-        - cargo +nightly fmt --help || cargo +nightly install rustfmt-nightly --force
+        - cargo +nightly fmt -- --version || cargo +nightly install rustfmt-nightly --force
         - cargo +nightly fmt --all -- --check
 
 matrix:
