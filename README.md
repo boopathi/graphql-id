@@ -1,5 +1,7 @@
 # graphql-id
 
+[![Build Status](https://travis-ci.com/boopathi/graphql-id.svg?branch=master)](https://travis-ci.com/boopathi/graphql-id) [![Latest version](https://img.shields.io/crates/v/graphql-id.svg)](https://crates.io/crates/graphql-id) [![Documentation](https://docs.rs/graphql-id/badge.svg)](https://docs.rs/graphql-id)
+
 Generate ID for a GraphQL Query.
 
 ## Usage

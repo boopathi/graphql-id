@@ -3,7 +3,14 @@ name = "graphql-id"
 version = "0.1.0"
 authors = ["Boopathi Rajaa <me@boopathi.in>"]
 description = "Generate an id for a GraphQL Query"
-license = "MIT"
+license = "MIT/Apache-2.0"
+homepage = "https://github.com/boopathi/graphql-id"
+repository = "https://github.com/boopathi/graphql-id"
+documentation = "https://docs.rs/graphql-id/0.1.0/graphql_id/"
+exclude = [
+  "tests/**/*",
+  "examples/**/*"
+]
 
 [dependencies]
 graphql-parser = "0.2.2"
