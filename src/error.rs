@@ -7,6 +7,8 @@ pub enum GraphQLError {
   FragmentNotFound,
   InfiniteFragmentRecursionError(String),
   Parse(ParseError),
+  MultipleOperation,
+  AnonymousOperation,
 }
 
 impl fmt::Display for GraphQLError {
@@ -22,6 +24,14 @@ impl fmt::Display for GraphQLError {
       GraphQLError::InfiniteFragmentRecursionError(ref fragment_name) => {
         write!(f, "Infinte Fragment Recursion detected {}", fragment_name)
       }
+      GraphQLError::MultipleOperation => write!(
+        f,
+        "Multiple Operations found in the query. Operation Name is required"
+      ),
+      GraphQLError::AnonymousOperation => write!(
+        f,
+        "Cannot generate id for anonymous query. Use an operation name"
+      ),
     }
   }
 }

@@ -1,4 +1,6 @@
+extern crate crypto;
 extern crate graphql_parser;
+extern crate itertools;
 
 pub mod error;
 pub mod traverse;
@@ -6,8 +8,12 @@ pub mod visitor;
 
 mod wrappers;
 
+use crypto::digest::Digest;
+use crypto::sha2::Sha256;
 use error::*;
 use graphql_parser::query::*;
+use itertools::FoldWhile::{Continue, Done};
+use itertools::Itertools;
 use std::collections::BTreeSet;
 use std::result::Result::*;
 use traverse::*;
@@ -78,6 +84,55 @@ impl<'a> Visitor for FragmentSpreadVisitor<'a> {
 
         Ok(())
     }
+}
+
+pub fn generate_operation_id(query: &str, operation_name: &str) -> Result<String, GraphQLError> {
+    let mut hasher = Sha256::new();
+    let operation = select_operation(query, operation_name)?;
+    hasher.input_str(operation.as_str());
+
+    Ok(hasher.result_str())
+}
+
+pub fn generate_default_operation_id(query: &str) -> Result<String, GraphQLError> {
+    let operation_name = get_default_operation_name(query)?;
+
+    generate_operation_id(query, operation_name.as_str())
+}
+
+pub fn get_default_operation_name(query: &str) -> Result<String, GraphQLError> {
+    let document = parse_query(query)?;
+
+    document
+        .definitions
+        .iter()
+        .filter_map(|definition| filter_operation_definition(definition))
+        .fold_while(
+            Err(GraphQLError::OperationNotFound),
+            |result, operation_definition| match operation_definition {
+                OperationDefinition::Query(query) => {
+                    if result.is_ok() {
+                        Done(Err(GraphQLError::MultipleOperation))
+                    } else {
+                        Continue(query.clone().name.ok_or(GraphQLError::AnonymousOperation))
+                    }
+                }
+                OperationDefinition::Mutation(mutation) => {
+                    if result.is_ok() {
+                        Done(Err(GraphQLError::MultipleOperation))
+                    } else {
+                        Continue(
+                            mutation
+                                .clone()
+                                .name
+                                .ok_or(GraphQLError::AnonymousOperation),
+                        )
+                    }
+                }
+                OperationDefinition::SelectionSet(_) => Done(Err(GraphQLError::AnonymousOperation)),
+                OperationDefinition::Subscription(_) => Done(Err(GraphQLError::AnonymousOperation)),
+            },
+        ).into_inner()
 }
 
 pub fn select_operation(query: &str, operation_name: &str) -> Result<String, GraphQLError> {

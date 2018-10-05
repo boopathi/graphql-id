@@ -1,0 +1,13 @@
+query PetSearch($name: String!) {
+  search(name: $name) {
+    __typename
+    ... on Pet {
+      id
+      type {
+        ... on Walks {
+          speed
+        }
+      }
+    }
+  }
+}
