@@ -2,6 +2,8 @@
 name = "graphql-id"
 version = "0.1.0"
 authors = ["Boopathi Rajaa <me@boopathi.in>"]
+description = "Generate an id for a GraphQL Query"
+license = "MIT"
 
 [dependencies]
 graphql-parser = "0.2.2"
