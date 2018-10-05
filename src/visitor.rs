@@ -1,6 +1,16 @@
 use error::*;
 use graphql_parser::query::*;
 
+/// Visitor is an input passed to the Traversal.
+///
+/// # Pattern:
+///
+/// - visit_<node_type>_enter - On enter of the AST node. Use this to get a pre-order traversal
+/// - visit_<node_type>_exit - On exit of the AST node. Use this to get a post-order traversal
+///
+/// We use default definitions of the functions here so we can have optional callbacks instead of
+/// handling every node in the User-API
+///
 #[allow(unused_variables)]
 pub trait Visitor {
     fn visit_definition_enter(&mut self, definition: &Definition) -> Result<(), GraphQLError> {

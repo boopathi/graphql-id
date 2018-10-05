@@ -123,6 +123,24 @@ pub fn generate_default_operation_id(query: &str) -> Result<String, GraphQLError
     generate_operation_id(query, operation_name.as_str())
 }
 
+/// Get the default operation name from the query
+///
+/// # Examples
+///
+/// ```
+///     let query = "
+///         query Foo { foo }
+///     "
+///     get_default_operation_name(&query); // -> Foo
+/// ```
+///
+/// # Errors
+///
+/// - AnonymousOperation - Currently, this library does not support anonymous operations
+///     - example: `query { foo }` or `{ foo }`
+/// - MultipleOperation - When more than one operations are found, there is no default operation.
+///     - example: `query A { a } query B { b }`
+///
 pub fn get_default_operation_name(query: &str) -> Result<String, GraphQLError> {
     let document = parse_query(query)?;
 
@@ -153,12 +171,24 @@ pub fn get_default_operation_name(query: &str) -> Result<String, GraphQLError> {
                     }
                 }
                 OperationDefinition::SelectionSet(_) => Done(Err(GraphQLError::AnonymousOperation)),
+                // TODO: handle subscription
                 OperationDefinition::Subscription(_) => Done(Err(GraphQLError::AnonymousOperation)),
             },
         )
         .into_inner()
 }
 
+/// Select an operation in the query and remove the unused fragments and other operations
+///
+/// # Examples
+///
+/// ```
+///     let query = "
+///         query A { foo }
+///         query B { bar }
+///     ";
+///     select_operation(&query, &"A"); // -> "query A { foo }"
+/// ```
 pub fn select_operation(query: &str, operation_name: &str) -> Result<String, GraphQLError> {
     let document = parse_query(query)?;
     let operation = select_operation_definition(&document, &operation_name)

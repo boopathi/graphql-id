@@ -2,16 +2,19 @@ use error::*;
 use graphql_parser::query::*;
 use visitor::*;
 
-// pub fn traverse_document(document: &Document, visitor: Box<Visitor>) -> Result<(), GraphQLError> {
-//   let mut traversal = Traversal { visitor };
-//   traversal.handle_document(&document);
-// }
-
+/// Traverse a GraphQL AST in a Depth-first fashion
+///
+/// Each handler in the traversal calls a `*_enter` method and a `*_exit` method.
+/// Use `*_enter` visitor if you want to traverse the AST in a *pre-order* fashion,
+/// and `*_exit` visitor if you want to traverse the AST in a *post-order* fashion.
+///
 pub struct Traversal<'a> {
+    /// The input visitor that implements the visitor trait with `*_enter` and `*_exit` callbacks
     pub visitor: &'a mut Visitor,
 }
 
 impl<'a> Traversal<'a> {
+    /// Handle GraphQL Document node
     pub fn handle_document(&mut self, document: &Document) -> Result<(), GraphQLError> {
         self.visitor.visit_document_enter(document)?;
 
@@ -25,6 +28,7 @@ impl<'a> Traversal<'a> {
         self.visitor.visit_document_exit(document)
     }
 
+    /// Handle GraphQL OperationDefinition node
     pub fn handle_operation_definition(
         &mut self,
         operation_definition: &OperationDefinition,
@@ -44,6 +48,7 @@ impl<'a> Traversal<'a> {
             .visit_operation_definition_exit(operation_definition)
     }
 
+    /// Handle GraphQL Query node
     pub fn handle_query(&mut self, query: &Query) -> Result<(), GraphQLError> {
         self.visitor.visit_query_enter(&query)?;
         if let Some(name) = &query.name {
@@ -59,6 +64,7 @@ impl<'a> Traversal<'a> {
         self.visitor.visit_query_exit(&query)
     }
 
+    /// Handle GraphQL VariableDefinition node
     pub fn handle_variable_definition(
         &mut self,
         variable_definition: &VariableDefinition,
@@ -74,6 +80,7 @@ impl<'a> Traversal<'a> {
             .visit_variable_definition_exit(&variable_definition)
     }
 
+    /// Handle GraphQL SelectionSet node
     pub fn handle_selection_set(
         &mut self,
         selection_set: &SelectionSet,
@@ -85,6 +92,7 @@ impl<'a> Traversal<'a> {
         self.visitor.visit_selection_set_exit(&selection_set)
     }
 
+    /// Handle GraphQL Selection node
     pub fn handle_selection(&mut self, selection: &Selection) -> Result<(), GraphQLError> {
         self.visitor.visit_selection_enter(&selection)?;
         match &selection {
@@ -99,6 +107,7 @@ impl<'a> Traversal<'a> {
         self.visitor.visit_selection_exit(&selection)
     }
 
+    /// Handle GraphQL Field node
     pub fn handle_field(&mut self, field: &Field) -> Result<(), GraphQLError> {
         self.visitor.visit_field_enter(&field)?;
         if let Some(alias) = &field.alias {
@@ -116,6 +125,7 @@ impl<'a> Traversal<'a> {
         self.visitor.visit_field_exit(&field)
     }
 
+    /// Handle GraphQL FragmentDefinition node
     pub fn handle_fragment_definition(
         &mut self,
         fragment_definition: &FragmentDefinition,
@@ -133,6 +143,7 @@ impl<'a> Traversal<'a> {
             .visit_fragment_definition_exit(&fragment_definition)
     }
 
+    /// Handle GraphQL InlineFragment node
     pub fn handle_inline_fragment(
         &mut self,
         inline_fragment: &InlineFragment,
@@ -148,6 +159,7 @@ impl<'a> Traversal<'a> {
         self.visitor.visit_inline_fragment_exit(&inline_fragment)
     }
 
+    /// Handle GraphQL FragmentSpread node
     pub fn handle_fragment_spread(
         &mut self,
         fragment_spread: &FragmentSpread,
@@ -160,6 +172,7 @@ impl<'a> Traversal<'a> {
         self.visitor.visit_fragment_spread_exit(&fragment_spread)
     }
 
+    /// Handle GraphQL Directive node
     pub fn handle_directive(&mut self, directive: &Directive) -> Result<(), GraphQLError> {
         self.visitor.visit_directive_enter(&directive)?;
 
@@ -170,6 +183,7 @@ impl<'a> Traversal<'a> {
         self.visitor.visit_directive_exit(&directive)
     }
 
+    /// Handle GraphQL TypeCondition node
     pub fn handle_type_condition(
         &mut self,
         type_condition: &TypeCondition,
@@ -182,6 +196,7 @@ impl<'a> Traversal<'a> {
         self.visitor.visit_type_condition_exit(&type_condition)
     }
 
+    /// Handle GraphQL Type node
     pub fn handle_type(&mut self, type1: &Type) -> Result<(), GraphQLError> {
         self.visitor.visit_type_enter(&type1)?;
 
@@ -193,11 +208,13 @@ impl<'a> Traversal<'a> {
         self.visitor.visit_type_exit(&type1)
     }
 
+    /// Handle GraphQL Name node
     pub fn handle_name(&mut self, name: &Name) -> Result<(), GraphQLError> {
         self.visitor.visit_name_enter(&name)?;
         self.visitor.visit_name_exit(&name)
     }
 
+    /// Handle GraphQL Value node
     pub fn handle_value(&mut self, value: &Value) -> Result<(), GraphQLError> {
         self.visitor.visit_value_enter(&value)?;
         self.visitor.visit_value_exit(&value)
