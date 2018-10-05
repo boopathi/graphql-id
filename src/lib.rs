@@ -86,6 +86,14 @@ impl<'a> Visitor for FragmentSpreadVisitor<'a> {
     }
 }
 
+/// Generate an operation id for a query with an operation_name
+///
+/// # Examples
+///
+/// ```
+///
+/// ```
+///
 pub fn generate_operation_id(query: &str, operation_name: &str) -> Result<String, GraphQLError> {
     let mut hasher = Sha256::new();
     let operation = select_operation(query, operation_name)?;
@@ -132,7 +140,8 @@ pub fn get_default_operation_name(query: &str) -> Result<String, GraphQLError> {
                 OperationDefinition::SelectionSet(_) => Done(Err(GraphQLError::AnonymousOperation)),
                 OperationDefinition::Subscription(_) => Done(Err(GraphQLError::AnonymousOperation)),
             },
-        ).into_inner()
+        )
+        .into_inner()
 }
 
 pub fn select_operation(query: &str, operation_name: &str) -> Result<String, GraphQLError> {
