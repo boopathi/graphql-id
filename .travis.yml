@@ -18,9 +18,9 @@ jobs:
     - stage: lint
       rust: nightly
       script:
-        - export PATH="$PATH:$HOME/.cargo/bin"
+        - export PATH="$PATH:~/.cargo/bin"
         - which cargo-fmt || cargo install rustfmt-nightly
-        - cargo fmt -- --check
+        - cargo +nightly fmt --all -- --check
 
 matrix:
   allow_failures:
