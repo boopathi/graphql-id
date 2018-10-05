@@ -91,7 +91,11 @@ impl<'a> Visitor for FragmentSpreadVisitor<'a> {
 /// # Examples
 ///
 /// ```
+///     let query = "
+///         query Foo { foo }
+///     ";
 ///
+///     generate_operation_id(&query, &"Foo");
 /// ```
 ///
 pub fn generate_operation_id(query: &str, operation_name: &str) -> Result<String, GraphQLError> {
@@ -102,6 +106,17 @@ pub fn generate_operation_id(query: &str, operation_name: &str) -> Result<String
     Ok(hasher.result_str())
 }
 
+/// Generate an operation id for the default operation in the query string
+///
+/// # Examples
+///
+/// ```
+///     let query = "
+///         query Foo { foo }
+///     ";
+///
+///     generate_default_operation_id(&query);
+/// ```
 pub fn generate_default_operation_id(query: &str) -> Result<String, GraphQLError> {
     let operation_name = get_default_operation_name(query)?;
 

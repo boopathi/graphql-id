@@ -1,13 +1,25 @@
 use graphql_parser::query::*;
 use std::fmt;
 
+/// # GraphQLError
 #[derive(Debug)]
 pub enum GraphQLError {
+    /// The target operation is not found in the Query
     OperationNotFound,
+
+    /// A fragment used in the target operation is not found
     FragmentNotFound,
+
+    /// A fragment contains itself or contains other fragments that cause a loop
     InfiniteFragmentRecursionError(String),
+
+    /// GraphQL Parse error
     Parse(ParseError),
+
+    /// A default operation cannot be chosen as the input contains multiple operations
     MultipleOperation,
+
+    /// An operation always requires an operation name (not a limitation in GraphQL. Just a limitation in this library)
     AnonymousOperation,
 }
 
