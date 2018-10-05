@@ -25,4 +25,5 @@ jobs:
 matrix:
   allow_failures:
     - rust: nightly
+      stage: test
   fast_finish: true
