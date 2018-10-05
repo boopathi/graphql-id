@@ -8,7 +8,7 @@ use std::io::prelude::Read;
 
 fn main() {
     let matches = App::new("graphql-id")
-        .version("0.1.1")
+        .version("0.1.2")
         .about("generate graphql id")
         .arg(
             Arg::with_name("FILE")
