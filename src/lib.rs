@@ -91,6 +91,7 @@ impl<'a> Visitor for FragmentSpreadVisitor<'a> {
 /// # Examples
 ///
 /// ```
+///     use graphql_id::*;
 ///     let query = "
 ///         query Foo { foo }
 ///     ";
@@ -111,6 +112,7 @@ pub fn generate_operation_id(query: &str, operation_name: &str) -> Result<String
 /// # Examples
 ///
 /// ```
+///     use graphql_id::*;
 ///     let query = "
 ///         query Foo { foo }
 ///     ";
@@ -128,9 +130,10 @@ pub fn generate_default_operation_id(query: &str) -> Result<String, GraphQLError
 /// # Examples
 ///
 /// ```
+///     use graphql_id::*;
 ///     let query = "
 ///         query Foo { foo }
-///     "
+///     ";
 ///     get_default_operation_name(&query); // -> Foo
 /// ```
 ///
@@ -183,6 +186,7 @@ pub fn get_default_operation_name(query: &str) -> Result<String, GraphQLError> {
 /// # Examples
 ///
 /// ```
+///     use graphql_id::*;
 ///     let query = "
 ///         query A { foo }
 ///         query B { bar }
